@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Projects from '@/views/Projects'
-import Imputations from '@/views/Imputations'
+import ProjectDetail from '@/views/ProjectDetail'
 
 Vue.use(VueRouter)
 
@@ -12,9 +12,9 @@ const routes = [
     component: Projects
   },
   {
-    path: '/imputations',
-    name: 'Imputations',
-    component: Imputations
+    path: '/project/:projectCode',
+    name: 'ProjectDetail',
+    component: ProjectDetail
   }
 ]
 

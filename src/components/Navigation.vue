@@ -4,7 +4,6 @@
         <img class="logo" src="https://boosted.orange.com/docs/4.5/dist/img/orange_logo.svg">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item"><router-link class="nav-link" active-class="active" aria-current="page" to="/projects">Projets</router-link></li>
-            <li class="nav-item"><router-link class="nav-link" active-class="active" aria-current="page" to="/imputations">Imputations</router-link></li>
         </ul>
     </div>
 </nav>
