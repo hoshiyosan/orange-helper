@@ -18,7 +18,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="imputation in selectedProjectImputations" :key="imputation.date">
-                        <td>{{imputation.date}}</td>
+                        <td>{{imputation.date | date}}</td>
                         <td>{{imputation.hours}}</td>
                     </tr>
                     <tr>
@@ -41,6 +41,12 @@ export default {
     mounted(){
         if(!this.$route.params.projectCode) this.$router.push({name: "Projects"});
         this.$store.commit('setSelectedProject', this.$route.params.projectCode);
+    },
+    filters: {
+        date: function (d) {
+            if (!d) return ''
+            return d.toLocaleDateString('FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
     }
 }
 </script>
