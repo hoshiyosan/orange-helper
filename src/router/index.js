@@ -15,6 +15,10 @@ const routes = [
     path: '/project/:projectCode',
     name: 'ProjectDetail',
     component: ProjectDetail
+  },
+  {
+    path: '*',
+    redirect: '/projects'
   }
 ]
 
