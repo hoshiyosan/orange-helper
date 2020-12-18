@@ -1,0 +1,36 @@
+{
+    "name": "Orange Helper",
+    "manifest_version": 2,
+    "version": "0.1",
+    "permissions": [
+        "tabs",
+        "storage",
+        "declarativeContent"
+    ],
+    "browser_action": {
+      "default_icon": {
+        "16": "images/orange_16.png",
+        "32": "images/orange_32.png",
+        "48": "images/orange_48.png",
+        "128": "images/orange_128.png"
+      },
+      "default_popup": "index.html"
+    },
+    "icons": {
+        "16": "images/orange_16.png",
+        "32": "images/orange_32.png",
+        "48": "images/orange_48.png",
+        "128": "images/orange_128.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://eeeg.fa.em2.oraclecloud.com/*"
+            ],
+            "js": [
+                "contentscripts/fusion.js"
+            ],
+            "run_at": "document_end"
+        }
+    ]
+}
