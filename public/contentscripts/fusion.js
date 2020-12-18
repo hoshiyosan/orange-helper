@@ -60,42 +60,22 @@ function extractImputations() {
  * Abstraction to asynchronously access storage
  */
 
-class Storage {
-    constructor() {
-        this.imputations = [];
-    }
-    getImputations(filter = () => true) {
-        return new Promise(resolve => {
-            resolve(this.imputations.filter(filter));
-        })
-    }
-    removeImputations(filter) {
-        return new Promise(resolve => {
-            this.imputations = this.imputations.filter(filter);
-            resolve();
-        })
-    }
-    pushImputations(...imputations) {
-        return new Promise(resolve => {
-            this.imputations.push(...imputations);
-            resolve();
-        })
-    }
-}
-
-chrome.storage.sync.set({ key: value }, function () {
-    console.log('Value is set to ' + value);
-});
-
-chrome.storage.sync.get(['key'], function (result) {
-    console.log('Value currently is ' + result.key);
-});
 
 class ChromeStorage {
+    validateImputation(imputation){
+        return (
+            !!imputation && !!imputation.date && !!imputation.code
+        )
+    }
     getImputations(filter = () => true) {
         return new Promise(resolve => {
             chrome.storage.sync.get(['imputations'], (result) => {
-                const imputations = result.imputations || [];
+                const imputations = (result.imputations || []).map(imputation=>{
+                    console.log("imputation date");
+                    imputation.date = new Date(imputation.date);
+                    return imputation;
+                });
+                console.log('getImputations', imputations);
                 resolve(imputations.filter(filter));
             });
 
@@ -103,33 +83,40 @@ class ChromeStorage {
     }
     setImputations(...imputations) {
         return new Promise(resolve => {
-            chrome.storage.sync.set({ imputations }, function () {
-                resolve(imputations);
+            console.log('setImputations', imputations);
+            chrome.storage.sync.set({ 
+                imputations: [...imputations.map(imputation=>{ imputation.date = imputation.date.toISOString(); return imputation})]
+            }, function () {
+                resolve();
             });
         });
     }
     removeImputations(filter) {
+        console.log('removeImputations');
         return new Promise(resolve => {
             this.getImputations()
                 .then(imputations => {
                     imputations = imputations.filter(filter);
-                    this.setImputations(imputations)
+                    this.setImputations(...imputations)
                         .then(updatedImputations => resolve(updatedImputations));
                 });
         })
     }
     pushImputations(...newImputations) {
+        console.log('pushImputations', newImputations);
+        const safeImputations = newImputations.filter(imputation => this.validateImputation);
         return new Promise(resolve => {
             this.getImputations()
                 .then(imputations => {
-                    imputations.push(...newImputations);
-                    this.setImputations(imputations)
+                    imputations.push(...safeImputations);
+                    this.setImputations(...imputations)
                         .then(updatedImputations => resolve(updatedImputations));
                 })
         })
     }
 }
 
+chrome.storage.sync.remove("imputations", function () {});
 
 (() => {
     const storage = new ChromeStorage();
@@ -139,11 +126,13 @@ class ChromeStorage {
      */
     function removeImputationsForWeek() {
         const weekDays = extractPeriod().map(date => date.getTime());
+        console.log('weekDays', weekDays);
         return storage.removeImputations(imputation => !weekDays.includes(imputation.date.getTime()));
         //imputations = imputations.filter(imputation => !weekDays.includes(imputation.date.getTime()));
     }
 
     function addOrUpdateImputations(newImputations) {
+        console.log('addOrUpdateImputations', newImputations);
         return new Promise(resolve => {
             removeImputationsForWeek()
                 .then(() => {
