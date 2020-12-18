@@ -116,8 +116,6 @@ class ChromeStorage {
     }
 }
 
-chrome.storage.sync.remove("imputations", function () {});
-
 (() => {
     const storage = new ChromeStorage();
 

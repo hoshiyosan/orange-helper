@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+
 Vue.use(Vuex)
+
 
 export default new Vuex.Store({
   state: {
@@ -24,42 +26,16 @@ export default new Vuex.Store({
         code: 'ALL-GA-GEN9999'
       }
     ],
-    workingHours: [
-      {
-        project: 'ABF-CU-BUILD-ORANGE SA-OLP0127211A',
-        date: new Date(),
-        hours: 8
-      },
-      {
-        project: 'ABF-CU-BUILD-ORANGE SA-OBS1764103R',
-        date: new Date(),
-        hours: 4
-      },
-      {
-        project: 'ALL-GA-GEN9999',
-        date: new Date(),
-        hours: 4
-      },
-      {
-        project: 'ABF-CU-BUILD-ORANGE SA-OLP0127211A',
-        date: new Date(),
-        hours: 8
-      },
-      {
-        project: 'ABF-CU-BUILD-ORANGE SA-OLP0127211A',
-        date: new Date(),
-        hours: 8
-      }
-    ],
+    workingHours: [],
     selectedProject: null
   },
   getters: {
     projects: state => {
       let countHours = {};
-      for(let workingHour of state.workingHours){
-        console.log(workingHour.hours);
-        if(countHours[workingHour.project] === undefined) countHours[workingHour.project] = 0;
-        countHours[workingHour.project] += workingHour.hours;
+      for(let imputation of state.workingHours){
+        console.log(imputation.hours);
+        if(countHours[imputation.code] === undefined) countHours[imputation.code] = 0;
+        countHours[imputation.code] += imputation.hours;
       }
       let projects = [];
       for(let project of state.projects){
@@ -79,11 +55,11 @@ export default new Vuex.Store({
       return state.selectedProject
     },
     selectedProjectImputations: state => {
-      return state.workingHours.filter(imputation=>imputation.project === state.selectedProject.code)
+      return state.workingHours.filter(imputation=>imputation.code === state.selectedProject.code)
     },
     countTotalHours: state => {
       return state.workingHours
-      .filter(imputation=>imputation.project === state.selectedProject.code)
+      .filter(imputation=>imputation.code === state.selectedProject.code)
       .map(imputation=>imputation.hours)
       .reduce((count, value)=>count+value, 0)
     }
@@ -103,6 +79,10 @@ export default new Vuex.Store({
     setSelectedProject(state, code){
       state.selectedProject = state.projects.filter(project=>project.code === code)[0];
       console.log(state.selectedProject);
+    },
+    setImputations(state, imputations){
+      state.workingHours = imputations;
+      console.log('setImputations', state.workingHours);
     }
   },
   actions: {
@@ -116,6 +96,20 @@ export default new Vuex.Store({
       return new Promise(resolve=>{
         commit('removeProject', code);
         resolve();
+      });
+    },
+    reloadImputations({commit}){
+      console.log('reload imputations')
+      return new Promise(resolve=>{
+        chrome.storage.sync.get(['imputations'], (result) => {
+          const imputations = (result.imputations || []).map(imputation=>{
+              console.log("imputation date");
+              imputation.date = new Date(imputation.date);
+              return imputation
+          });
+          commit('setImputations', imputations);
+          resolve();
+        });
       });
     }
   }
