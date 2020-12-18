@@ -2,7 +2,7 @@
   <div class="projects">
     <header class="title">
       <h2>Projets</h2>
-      <button class="btn btn-primary"><span class="material-icons">get_app</span>Télécharger le détail au format CSV</button>
+      <button class="btn btn-primary" @click="downloadFullReport()"><span class="material-icons">get_app</span>Télécharger au format CSV</button>
     </header>
     <form class="input-group mb-3" @submit="addProject()">
       <input type="text" class="form-control" v-model="name" @keyup="filterProjects()" style="flex: 1" placeholder="Nom du projet">
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
   name: 'Projects',
@@ -63,7 +63,8 @@ export default {
     },
     filterProjects(){
       this.$store.commit('filterProjects', {name: this.name, code: this.code});
-    }
+    },
+    ...mapActions(['downloadFullReport'])
   }
 }
 </script>

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import CSV from '@/libs/csv'
 
 Vue.use(Vuex)
 
@@ -111,6 +111,33 @@ export default new Vuex.Store({
           resolve();
         });
       });
+    },
+    downloadFullReport({state}){
+      // workout project names
+      let projectName = {};
+      for(let project of state.projects){
+        projectName[project.code] = project.name
+      }
+      const csv = new CSV("project", "hours", "date", "code");
+      for(let imputation of state.workingHours){
+        csv.addRow(
+          projectName[imputation["code"]] || 'unknown',
+          imputation["hours"],
+          imputation["date"],
+          imputation["code"]);
+      }
+      csv.download("imputations.csv");
+    },
+    downloadSelectedProjectReport({state, getters}){
+      const csv = new CSV("project", "hours", "date", "code");
+      for(let imputation of getters.selectedProjectImputations){
+        csv.addRow(
+          state.selectedProject.name,
+          imputation["hours"],
+          imputation["date"],
+          imputation["code"]);
+      }
+      csv.download(`imputations_${state.selectedProject.name.toLocaleLowerCase()}.csv`);
     }
   }
 })

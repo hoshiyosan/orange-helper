@@ -5,7 +5,7 @@
                 <h2>Projet: {{selectedProject.name}}</h2>
                 <i>{{selectedProject.code}}</i>
             </div>
-            <button class="btn btn-primary"><span class="material-icons">get_app</span>Télécharger au format CSV</button>
+            <button class="btn btn-primary" @click="downloadSelectedProjectReport()"><span class="material-icons">get_app</span>Télécharger au format CSV</button>
         </header>
         
         <div class="table-responsive">
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
     computed: {
@@ -47,6 +47,9 @@ export default {
             if (!d) return ''
             return d.toLocaleDateString('FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         }
+    },
+    methods: {
+        ...mapActions(['downloadSelectedProjectReport'])
     }
 }
 </script>
