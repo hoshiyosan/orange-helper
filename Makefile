@@ -4,7 +4,7 @@ help:
 
 bump:
 	bump2version --tag --commit --current-version `cat public/manifest.json | jq -r .version` patch public/manifest.json
-	git push --follow-tags
+	git push && git push --tags
 
 dist:
 	npm run build

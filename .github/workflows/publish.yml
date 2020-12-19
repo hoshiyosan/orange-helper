@@ -1,0 +1,59 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Publish
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install jq to parse package version, make to use build command
+        run: sudo apt install -y jq make
+      
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: 15.4.0
+      
+      - name: Get extension version
+        id: get_version
+        run: |
+          version=$(cat public/manifest.json | jq -r .version)
+          echo "::set-output name=version::${version}"
+
+      - name: Display parsed version for debuging
+        run: echo ${{steps.get_version.outputs.version}}
+      
+      - name: Install build dependencies
+        run: npm ci
+      
+      - name: Build and zip application
+        run: make dist
+      
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          release_name: Release ${{ steps.get_version.outputs.version }}
+          draft: false
+          prerelease: false
+      
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./orange-helper.zip
+          asset_name: orange-helper.zip
+          asset_content_type: application/zip

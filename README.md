@@ -1,4 +1,4 @@
-# orange-chrome
+# Orange Helper
 
 ## Project setup
 ```

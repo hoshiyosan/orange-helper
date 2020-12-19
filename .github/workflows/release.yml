@@ -4,7 +4,6 @@ name: Release
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
   pull_request:
@@ -19,10 +18,13 @@ jobs:
   release:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'Bump version')"
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - name: Install jq to parse version
         run: sudo apt install -y jq make
@@ -37,8 +39,8 @@ jobs:
       
       - name: Configure Git
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "Sylvan Le Deunff"
+          git config --global user.email "sledeunf@gmail.com"
       
       - name: Bump version and push it on master branch
         run: make bump
