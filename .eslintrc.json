@@ -3,9 +3,11 @@
     "parser": "vue-eslint-parser",
     "env": {
         "webextensions": true,
+        "browser": true,
         "es6": true
     },
     "parserOptions": {
-        "ecmaVersion": 2017
+        "ecmaVersion": 2017,
+        "sourceType": "module"
     }
 }
