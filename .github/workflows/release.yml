@@ -25,14 +25,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install jq to parse version
-        run: sudo apt install -y jq
-
-      - name: Get current version
-        id: version
-        run: |
-          current_version=$(cat public/manifest.json | jq -r .version)
-          echo "::set-output name=current_version::${current_version}"
-          echo ${current_version}
+        run: sudo apt install -y jq python3.8 python3-pip make
       
-      - name: Debug version parsing
-        run: echo ${{steps.version.outputs.current_version}}
+      - name: Install bumpversion to increment version number
+        run: pip3 install bump2version
+      
+      - name: Bump version and push it on master branch
+        run: make bump
