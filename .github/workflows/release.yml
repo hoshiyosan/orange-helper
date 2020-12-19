@@ -32,6 +32,7 @@ jobs:
         run: |
           current_version=$(cat public/manifest.json | jq -r .version)
           echo "::set-output name=current_version::${current_version}"
+          echo ${current_version}
       
       - name: Debug version parsing
         run: echo {{steps.version.outputs.current_version}}
