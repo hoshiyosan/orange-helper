@@ -3,7 +3,7 @@ help:
 	@echo "Commands: dist"
 
 bump:
-	bump2version --commit --current-version `cat public/manifest.json | jq -r .version` patch public/manifest.json
+	bump2version --tag --commit --current-version `cat public/manifest.json | jq -r .version` patch public/manifest.json
 	git push --follow-tags
 
 dist:
