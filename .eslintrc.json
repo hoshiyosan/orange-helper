@@ -1,6 +1,11 @@
 {
-    "parser": "babel-eslint",
+    "extends": "eslint:recommended",
+    "parser": "vue-eslint-parser",
     "env": {
-        "webextensions": true
+        "webextensions": true,
+        "es6": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2017
     }
 }

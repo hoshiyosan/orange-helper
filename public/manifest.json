@@ -2,7 +2,7 @@
     "name": "Orange Helper",
     "description": "Add features to Orange internal webapps",
     "manifest_version": 2,
-    "version": "0.0.28",
+    "version": "0.0.1",
     "permissions": [
         "tabs",
         "storage",
