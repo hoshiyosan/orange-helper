@@ -35,4 +35,6 @@ jobs:
           echo ${current_version}
       
       - name: Debug version parsing
-        run: echo {{steps.version.outputs.current_version}}
+        run: echo $current_version
+        env:
+          current_version: "{{steps.version.outputs.current_version}}"
