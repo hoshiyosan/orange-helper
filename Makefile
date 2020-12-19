@@ -3,7 +3,7 @@ help:
 	@echo "Commands: dist"
 
 bump:
-	bump2version --commit --current-version `cat public/manifest.json | jq -r .version` patch dist/manifest.json
+	bump2version --commit --current-version `cat public/manifest.json | jq -r .version` patch public/manifest.json
 
 dist:
 	npm run build
